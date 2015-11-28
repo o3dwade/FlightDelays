@@ -3,12 +3,25 @@ import sys
 import random
 import math
 
-k = sys.argv[2]
 arr = None
 
 def main():
+	counts = {}
 	initialize()
-	print arr[0].split(',')
+	cols = arr[1].split(',')
+	for i in range(len(cols)):
+		if (i==0):
+			print cols[i]
+	for i in range(len(arr)):
+		cols = arr[i].split(',')
+		for idx,c in enumerate(cols):
+			if c in counts:
+				counts[c] = counts[c] + 1
+			else:
+				counts[c] = 1
+	
+
+
 def initialize():
 	global arr
 	count=0
@@ -29,10 +42,14 @@ def initialize():
 	reader = csv.reader(f)
 	for idx,row in enumerate(reader):
 		arr[idx] = row
+		arr[idx]=str(arr[idx]).replace('[','').replace(']','')
+		arr[idx]=str(arr[idx]).replace("\'",'')
+		arr[idx]=str(arr[idx]).replace(" ",'')
 
-	for i in range(len(arr)):
-		arr[i]=str(arr[i]).replace('[','').replace(']','')
-		arr[i]=str(arr[i]).replace("\'",'')
+		#print arr[idx]
+
+
+
 		#print arr[i]
 
 
