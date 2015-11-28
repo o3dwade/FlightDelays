@@ -2,30 +2,27 @@ import csv
 import sys
 import random
 import math
+from collections import defaultdict
 
-
-def getData(fileR):
+def getData(fileR,n):
 	count=0
 	reader = csv.reader(fileR)
 	som = None
 	for idx,row in enumerate(reader):
 		count=count+1
-		if (idx==1):
+		if (idx==0):
 			som = row
-		print row
+		#print row
 	C=count
-	points = [0 for x in range(int(C))]
 	arr=[[0 for x in range(len(som))] for x in range(count)]
-	global pt
-	pt = [[0 for x in range(len(som))] for x in range(count)]
-	f = open(sys.argv[1], 'r')
+	f = open(sys.argv[n], 'r')
 	reader = csv.reader(f)
 	for idx,row in enumerate(reader):
 		arr[idx] = row
 		arr[idx]=str(arr[idx]).replace('[','').replace(']','')
 		arr[idx]=str(arr[idx]).replace("\'",'')
 		arr[idx]=str(arr[idx]).replace(" ",'')
-	arr.remove(arr[0])
+	fileR.close()
 
 	return arr
 
@@ -35,6 +32,19 @@ def probabilityOfLate(dataset):
 		if row[-1]=='1':
 			count = count + 1
 	return float(count)/float(len(dataset))
+
+def lateInstances(dataset, opt):
+	count = 0
+	timeC = 0
+	for row in dataset:
+		if row[-1]=='1':
+			count = count + 1
+		if row[-1]=='0':
+			timeC = timeC + 1
+	if (opt=='late'):
+		return float(count)
+	else:
+		return float(timeC)
 
 def delayedDataSet(dataset, opt):
 	late_set = []
@@ -46,36 +56,52 @@ def delayedDataSet(dataset, opt):
 			time_set.append(row)
 	if (opt == 'late'):
 		return late_set
-	elif (opt =='time'):
-		return time_set
 	else:
-		return "Error you need to enter either \"late\" or \"time\""
+		return time_set
 
 def instanceProbabiltyCount(arr, inst):
-	counts = {}
+	counts = defaultdict(lambda: 0)
 	for i in range(len(arr)):
 		cols = arr[i].split(',')
 		for idx,c in enumerate(cols):
 			if (idx==inst):
-				if c in counts:
-					counts[c] = counts[c] + 1
-				else:
-					counts[c] = 1
+				#if c in counts:
+				counts[c] +=  1
+				#else:
+				#	counts[c] = 1
 	return counts
 
 
 def main():
 	
-	f = open(sys.argv[1],'rt')
-	arr=getData(f)
+	f = open(sys.argv[1],'r')
+	t = open(sys.argv[2],'rt')
+	arr=getData(f,1)
+	art=getData(t,2)
 	late_prob = probabilityOfLate(arr)
-	late_flights = delayedDataSet(arr,'late')
-	ontime_flights=delayedDataSet(arr,'time')
+	late_num = lateInstances(arr, 'late')
+	time_num = lateInstances(arr, 'time')
+	late_arr = delayedDataSet(arr,'late')
+	ontime_arr=delayedDataSet(arr,'time')
 
 	cols = arr[1].split(',')
-
-	#for key,value in instanceProbabiltyCount(arr, 2).iteritems():
+	countDelay_arr=[]
+	countOnTime_arr=[]
+	for i in range(len(cols)):
+		countDelay_arr.append(instanceProbabiltyCount(late_arr, i))
+		countOnTime_arr.append(instanceProbabiltyCount(ontime_arr, i))
+	#for key,value in count_arr[0].iteritems():
+		#value = float(value)/float(late_num)
 		#print key, value
+	print "-------------------"
+	for row in art:
+		sumD=1
+		sumT=1
+		#for idx,col in enumerate(row.split(',')):
+		#	sumD*=countDelay_arr[idx][col]/late_num
+		#	sumT*=countOnTime_arr[idx][col]/time_num
+		print sumT
+		
 
 if __name__=="__main__":
 	main()
