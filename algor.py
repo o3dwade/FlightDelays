@@ -18,11 +18,9 @@ def main():
 		else:
 			ontime0 += 1
 	total = delay1 + ontime0
-	#print "AA dalayed" , delay1, "on time", ontime0, "total", delay1+ontime0
 	originalEntropy = entropy(delay1, ontime0)
 
 	for i in range(len(fileData[0])-1):
-		#print fileData[0]
 		if(fileData[0][i].isdigit()):
 			time = True
 		else: 
@@ -98,7 +96,7 @@ def calculateEntropy(attr, inst):
 	for line in fileData:
 		if(line[attr] == inst):
 			#print(line)
-			if(line[4] == "1"):
+			if(line[len(line)-1] == "1"):
 				delay1 += 1
 			else:
 				ontime0 += 1
