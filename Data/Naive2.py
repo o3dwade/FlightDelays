@@ -94,13 +94,31 @@ def main():
 		#value = float(value)/float(late_num)
 		#print key, value
 	print "-------------------"
+	TP=0
+	TN=0
+	FP=0
+	FN=0
 	for row in art:
 		sumD=1
 		sumT=1
 		#for idx,col in enumerate(row.split(',')):
 		#	sumD*=countDelay_arr[idx][col]/late_num
 		#	sumT*=countOnTime_arr[idx][col]/time_num
-		print sumT
+		for i in range(len(cols)-1):
+			sumD*=countDelay_arr[i][row.split(',')[i]]/late_num
+			sumT*=countOnTime_arr[i][row.split(',')[i]]/time_num
+		if (sumD>=sumT):
+			if(row.split(',')[-1]=='1'):
+				TN+=1
+			else:
+				FN+=1
+		else:
+			if(row.split(',')[-1]=='0'):
+				TP+=1
+			else:
+				FP+=1
+	print "Accuracy: " + str((float(TP+TN)/float(TP+TN+FP+FN))*100) +"%"
+
 		
 
 if __name__=="__main__":
