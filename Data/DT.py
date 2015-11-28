@@ -12,8 +12,6 @@ def getData(fileR,n):
 		count=count+1
 		if (idx==0):
 			som = row
-		
-	C=count
 	arr=[[0 for x in range(len(som))] for x in range(count)]
 	f = open(sys.argv[n], 'r')
 	reader = csv.reader(f)
@@ -62,9 +60,7 @@ def instanceDict(arr, inst):
 				counts[c] +=  1
 	return counts
 
-
 def main():
-	
 	f = open(sys.argv[1],'r')
 	t = open(sys.argv[2],'rt')
 	arr=getData(f,1)
@@ -96,7 +92,7 @@ def main():
 			#if (idx==0):
 				#print str(val)+" "+str(countAll[idx][val])
 
-		if (prob_late>=prob_time):
+		if (2>=0):
 			if(row.split(',')[-1]=='1'):
 				TN+=1
 			else:
@@ -110,9 +106,7 @@ def main():
 	print "----- Confusion Matrix -----\n a    b      classified as\n "+str(TP)+" "+str(FN)+""+" |    a = 0\n "+str(FP)+" "+str(TN)+""+" |    b = 1"
 
 
-	print "Accuracy: " + str((float(TP+TN)/float(TP+TN+FP+FN))*100) +"%"
-
-		
+	print "Accuracy: " + str(round((float(TP+TN)/float(TP+TN+FP+FN))*100,2)) +"%"
 
 if __name__=="__main__":
 	main()
