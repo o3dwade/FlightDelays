@@ -28,7 +28,6 @@ def main():
 		arr[idx]=str(arr[idx]).replace('[','').replace(']','')
 		arr[idx]=str(arr[idx]).replace("\'",'')
 		arr[idx]=str(arr[idx]).replace(" ",'')
-	arr.remove(arr[0])
 
 	for i in range(len(arr)):
 		for idx,col in enumerate(arr[i].split(',')):
