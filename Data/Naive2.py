@@ -23,15 +23,20 @@ def getData(fileR,n):
 		arr[idx]=str(arr[idx]).replace("\'",'')
 		arr[idx]=str(arr[idx]).replace(" ",'')
 	fileR.close()
-
 	return arr
 
-def probabilityOfLate(dataset):
+def probabilityOfLate(dataset, opt):
 	count = 0
+	timeC = 0
 	for row in dataset:
 		if row[-1]=='1':
-			count = count + 1
-	return float(count)/float(len(dataset))
+			count += 1
+		else:
+			timeC +=1
+	if (opt=='late'):
+		return float(count)/float(len(dataset))
+	else:
+		return float(timeC)/float(len(dataset))
 
 def lateInstances(dataset, opt):
 	count = 0
@@ -65,10 +70,7 @@ def instanceProbabiltyCount(arr, inst):
 		cols = arr[i].split(',')
 		for idx,c in enumerate(cols):
 			if (idx==inst):
-				#if c in counts:
 				counts[c] +=  1
-				#else:
-				#	counts[c] = 1
 	return counts
 
 
@@ -78,36 +80,43 @@ def main():
 	t = open(sys.argv[2],'rt')
 	arr=getData(f,1)
 	art=getData(t,2)
-	late_prob = probabilityOfLate(arr)
+	late_prob = probabilityOfLate(arr,'late')
+	time_prob = probabilityOfLate(arr,'time')
 	late_num = lateInstances(arr, 'late')
 	time_num = lateInstances(arr, 'time')
 	late_arr = delayedDataSet(arr,'late')
 	ontime_arr=delayedDataSet(arr,'time')
 
 	cols = arr[1].split(',')
-	countDelay_arr=[]
-	countOnTime_arr=[]
+	countDelay=[]
+	countOnTime=[]
+	countAll=[]
 	for i in range(len(cols)):
-		countDelay_arr.append(instanceProbabiltyCount(late_arr, i))
-		countOnTime_arr.append(instanceProbabiltyCount(ontime_arr, i))
+		countDelay.append(instanceProbabiltyCount(late_arr, i))
+		countOnTime.append(instanceProbabiltyCount(ontime_arr, i))
+		countAll.append(instanceProbabiltyCount(arr, i))
 	#for key,value in count_arr[0].iteritems():
 		#value = float(value)/float(late_num)
 		#print key, value
-	print "-------------------"
 	TP=0
 	TN=0
 	FP=0
 	FN=0
+
 	for row in art:
-		sumD=1
-		sumT=1
-		#for idx,col in enumerate(row.split(',')):
-		#	sumD*=countDelay_arr[idx][col]/late_num
-		#	sumT*=countOnTime_arr[idx][col]/time_num
-		for i in range(len(cols)-1):
-			sumD*=countDelay_arr[i][row.split(',')[i]]/late_num
-			sumT*=countOnTime_arr[i][row.split(',')[i]]/time_num
-		if (sumD>=sumT):
+		prob_given_late=1
+		prob_given_time=1
+		prob_all=1
+		for idx in range(len(cols)-1):
+			val=row.split(',')[idx]
+			prob_given_late*=countDelay[idx][val]
+			prob_given_time*=countOnTime[idx][val]
+			prob_all+=countAll[idx][val]
+			#if (idx==0):
+			#	print str(val)+" "+str(countAll[idx][val])
+		prob_late = (prob_given_late*late_prob)/prob_all
+		prob_time = (prob_given_time*time_prob)/prob_all
+		if (prob_late>=prob_time):
 			if(row.split(',')[-1]=='1'):
 				TN+=1
 			else:
@@ -117,6 +126,10 @@ def main():
 				TP+=1
 			else:
 				FP+=1
+
+	print "----- Confusion Matrix -----\n a    b      classified as\n "+str(TP)+" "+str(FN)+""+" |    a = 0\n "+str(FP)+" "+str(TN)+""+" |    b = 1"
+
+
 	print "Accuracy: " + str((float(TP+TN)/float(TP+TN+FP+FN))*100) +"%"
 
 		
