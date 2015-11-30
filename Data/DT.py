@@ -25,19 +25,41 @@ def getData(fileR,n):
 	fileR.close()
 	return arr
 
-def J48(arr, opp, inst):
+def J48(arr, opp, inst, tree):
 	if (len(arr) != 0 and len(opp)==0):
-		#print arr
+		tree.append(arr)
 		return arr
 	elif (len(arr) == 0 and len(opp)!=0):
-		#print opp
+		tree.append(opp)
 		return opp
 
 	for item in instanceDict(arr,inst).keys():	
 		iarr = arrOfItem(item, arr)
 		lateiarr = classDataSet(iarr,'late')
 		timeiarr = classDataSet(iarr,'time')
-		return J48(lateiarr, timeiarr, inst)
+		J48(lateiarr, timeiarr, inst, tree)
+
+def nJ48(arr, opp, inst, tree):
+	if (len(arr) != 0 and len(opp)==0):
+		tree.append(arr)
+		return arr
+	elif (len(arr) == 0 and len(opp)!=0):
+		tree.append(opp)
+		return opp
+
+	for item in instanceDict(arr,inst).keys():	
+		avg = avgInst(arr, inst)
+		iarr = arrOfItem(item, arr)
+		lateiarr = classDataSet(iarr,'late')
+		timeiarr = classDataSet(iarr,'time')
+		J48(lateiarr, timeiarr, inst, tree)
+
+
+def avgInst(narr, inst):
+	sum = 0
+	for i in instanceDict(narr,inst).keys():
+		sum+=int(i)
+	return sum/(len(instanceDict(narr,inst).keys()))
 
 def classInstancesCount(dataset, opt):
 	count = 0
@@ -60,7 +82,6 @@ def getHighestGain(arr,inst):
 		for c in range(len(cols)):
 			if (c==inst):
 				m+=1
-
 	return m
 
 def classDataSet(dataset, opt):
@@ -83,6 +104,12 @@ def arrOfItem(item, arr):
 			data.append(row)
 	return data
 
+def narrOfItem(item, arr, avg):
+	data= []
+	for row in arr:
+		if item in row:
+			data.append(row)
+	return data
 
 def instanceDict(arr, inst):
 	counts = defaultdict(lambda: 0)
@@ -140,8 +167,15 @@ def main():
 	FP=0
 	FN=0
 	#print arrOfItem('AA', arr)
-	tree=J48(arr,arr,0)
-	print tree
+	tree=[]
+	cols = arr[1].split(',')
+	for idx in range(len(headers)):
+		if (cols[idx].isdigit()!=True):
+			J48(arr,arr,idx, tree)
+		#else:
+	#print avgInst(late_arr,4)
+	#for i in tree:
+	#	print i
 	for row in arr:#change to art
 		for idx in range(len(cols)-1):
 			val=row.split(',')[idx]
