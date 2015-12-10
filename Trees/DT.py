@@ -204,7 +204,7 @@ def main():
 	pHead=[]
 	for i in range(len(cols)-1):
 		pHead.append(findMaxPurity(arr))
-	print pHead
+	#print pHead
 	TP=0
 	TN=0
 	FP=0
@@ -218,7 +218,7 @@ def main():
 	for row in art:
 		k = row[:-2]
 		n=trainAcc(arr, pHead, tree, k)
-		print str(n)
+		#print str(n)
 		if (str(n).split(',')[-1]=='1'):
 			if(row.split(',')[-1]=='1'):
 				TN+=1
