@@ -4,6 +4,7 @@ import random
 import math
 from collections import defaultdict
 import itertools
+from algor import getGain
 
 headers = None
 def getData(fileR,n):
@@ -71,10 +72,11 @@ def classInstancesCount(dataset, opt):
 	count = 0
 	timeC = 0
 	for row in dataset:
-		if row[-1]=='1':
-			count = count + 1
-		if row[-1]=='0':
-			timeC = timeC + 1
+		if (len(row)>0):
+			if row[-1]=='1':
+				count = count + 1
+			if row[-1]=='0':
+				timeC = timeC + 1
 	if (opt=='late'):
 		return float(count)
 	else:
@@ -186,7 +188,7 @@ def main():
 	ontime_arr=classDataSet(arr,'time')
 
 	cols = arr[0].split(',')
-	headers = cols
+	headers = getGain(arr)
 	delay_dict_arr=[]
 	time_dict_arr=[]
 	all_Dict_arr=[]

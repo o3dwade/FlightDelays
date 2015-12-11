@@ -5,13 +5,14 @@ from collections import defaultdict
 
 fileData = []
 
-def main():
-	readFile(sys.argv[1])
+def getGain(arr):
+	#readFile(fileName)
 
 	ontime0 = 0
 	delay1 = 0
 
 	for line in fileData:
+		#line = l.split(',')
 		#if(line[0] == "AA"):
 		if(line[len(line)-1] == "1"):
 			delay1 += 1
@@ -20,14 +21,15 @@ def main():
 	total = delay1 + ontime0
 	originalEntropy = entropy(delay1, ontime0)
 
+	gains = []
 	for i in range(len(fileData[0])-1):
 		if(fileData[0][i].isdigit()):
 			time = True
 		else: 
 			time = False
-
-		print "attribute" , i , "with gain", (calculateGain(i, originalEntropy, time))
-	
+		gains.append(calculateGain(i, originalEntropy, time))
+		#print "attribute" , i , "with gain", (calculateGain(i, originalEntropy, time))
+	return gains
 
 def calculateGain(attr, originalEntropy, isNum):
 	if(isNum):
@@ -141,4 +143,4 @@ def average(attr):
 
 
 
-if __name__ == "__main__": main()
+if __name__ == "__main__": getGain()
